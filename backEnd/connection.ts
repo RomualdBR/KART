@@ -1,11 +1,11 @@
-import postgres from "postgres"
-import dotenv from "dotenv"
-dotenv.config()
+import postgres from "postgres";
+import dotenv from "dotenv";
 
-const databaseUrl = process.env.DATABASE_URL
+dotenv.config();
+const databaseUrl = process.env.DATABASE_URL;
 
-if (!databaseUrl) throw Error("No variable in .env")
+if (!databaseUrl) throw Error("No variable in .env");
 
 const sql = postgres(databaseUrl);
 
-export default sql
+export default sql;

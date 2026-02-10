@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { User } from "../models/user";
+import sql from "../connection";
 
 export async function userLogin(req: Request, res: Response) {
 
@@ -17,16 +18,18 @@ export async function userLogin(req: Request, res: Response) {
 }
 
 export async function userRegister(req: Request, res: Response) {
+    const pseudo: string = req.body["pseudo"];
+    const email: string = req.body["email"];
+    const password: string = req.body["password"];
 
-    console.log(req.query);
+    const result = await sql`
+        INSERT INTO "user" ("pseudo", "mail", "password")
+        VALUES (${pseudo}, ${email}, ${password})
+        RETURNING id
+    `
 
-    const pseudo: string = req.body["pseudo"] as string;
-    const email: string = req.body["email"] as string;
-    const password: string = req.body["password"] as string;
+    console.log(result)
 
-    console.log(pseudo, email, password);
-    const user = new User(0, pseudo, email, password);
-    const result = await user.insertUser(user);
     if (!result) {
         res.json({ message: "invalid email or password" });
         return;
