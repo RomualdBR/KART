@@ -13,14 +13,9 @@ export async function createPost(req: Request, res: Response) {
 	res.json(result);
 }
 
-export async function getPosts(req: Request, res: Response) {
-    const offset = Number(req.query["offset"]) || 0;
-    const limit = Number(req.query["limit"]) || 5;
-
+export async function getPosts(_req: Request, res: Response) {
 	const result = await sql`
         SELECT * FROM post
-        LIMIT ${limit}
-        OFFSET ${offset}
     `;
 
 	res.json(result);
