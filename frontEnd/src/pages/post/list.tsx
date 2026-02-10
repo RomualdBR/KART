@@ -1,14 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-
-type Post = { id: number; content: string };
+import type { Post } from "./types";
 
 const limit = 5 as const;
 
-export default function PostList() {
+export default function PostList({ postToAdd }: { postToAdd: Post | null }) {
 	const [offset, setOffset] = useState(0);
 	const [posts, setPosts] = useState<Post[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const isMountedRef = useRef(false);
+
+	useEffect(() => {
+		if (!postToAdd) return;
+
+		// eslint-disable-next-line react-hooks/set-state-in-effect
+		setPosts(prev => [postToAdd, ...prev]);
+	}, [postToAdd]);
 
 	useEffect(() => {
 		if (!isMountedRef.current) {
@@ -21,14 +27,11 @@ export default function PostList() {
 				`http://localhost:3000/post?offset=${offset}&limit=${limit}`,
 				{
 					method: "GET",
-					headers: {
-						"Content-Type": "application/json"
-					}
+					headers: { "Content-Type": "application/json" }
 				}
-			)
-				.then(res => res.json())
-				.finally(() => setIsLoading(false));
+			).then(res => res.json());
 
+			setIsLoading(false);
 			setPosts(prev => [...prev, ...response]);
 		}
 
@@ -37,7 +40,7 @@ export default function PostList() {
 
 	if (isLoading) return "Loading...";
 
-	console.log(posts);
+	console.log(posts)
 
 	return (
 		<div className="flex flex-col gap-2">

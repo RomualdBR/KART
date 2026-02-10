@@ -1,6 +1,11 @@
 import { useState } from "react";
+import type { Post } from "./types";
 
-export default function PostForm() {
+export default function PostForm({
+	setPostToAdd
+}: {
+	setPostToAdd: React.Dispatch<React.SetStateAction<Post | null>>;
+}) {
 	const [error, setError] = useState("");
 
 	async function createPost(formData: FormData) {
@@ -16,13 +21,11 @@ export default function PostForm() {
 
 		const response = await fetch(`http://localhost:3000/post`, {
 			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
+			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ content })
 		}).then(res => res.json());
 
-		console.log(response);
+		setPostToAdd(response);
 	}
 
 	return (
