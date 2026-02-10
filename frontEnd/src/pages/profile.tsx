@@ -6,8 +6,8 @@ export default function Profile() {
   useEffect(() => {
     const fetchUser = async () => {
       console.log("Fetching user data...");
-      const token = localStorage.getItem("token");
-      if (!token){
+      const jwt = localStorage.getItem("jwt");
+      if (!jwt){
         return console.error("No token found, user is not authenticated");
       }
 
@@ -15,7 +15,7 @@ export default function Profile() {
         const response = await fetch("http://localhost:3000/api/user/", {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${jwt}`,
           },
         });
 
