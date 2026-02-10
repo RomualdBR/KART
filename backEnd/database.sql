@@ -10,7 +10,7 @@ CREATE TABLE "post" (
   "content" text NOT NULL,
   "archivage" bool NOT NULL,
   "user_id" int NOT NULL,
-  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -19,7 +19,7 @@ CREATE TABLE "post_comment" (
   "content" text NOT NULL,
   "post_id" int NOT NULL,
   "user_id" int NOT NULL,
-  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -47,11 +47,3 @@ ALTER TABLE "follow" ADD FOREIGN KEY ("follower_id") REFERENCES "user" ("id");
 ALTER TABLE "follow" ADD FOREIGN KEY ("reciever_id") REFERENCES "user" ("id");
 
 ALTER TABLE "post_comment" ADD FOREIGN KEY ("post_id") REFERENCES "post" ("id");
-
-
-INSERT INTO "user" (pseudo, mail, password) VALUES ('kiwi', 'kiwi@kiwi.com', 'nah_kiwi');
-
-INSERT INTO "post" (content, archivage, user_id) VALUES
-("Bonjour je suis kiwi", false, 1), 
-("Quel beau kiwi il fait aujourd'hui", false, 1), 
-("Yokoso kiwi socity", false, 1);
