@@ -24,7 +24,7 @@ export default function PostList({ postToAdd }: { postToAdd: Post | null }) {
 
 		async function fetchPosts() {
 			const response: Post[] = await fetch(
-				`http://localhost:3000/post?offset=${offset}&limit=${limit}`,
+				`http://localhost:3000/post?offset=${offset}&limit=${limit}&user_id=4`,
 				{
 					method: "GET",
 					headers: { "Content-Type": "application/json" }

@@ -22,12 +22,14 @@ export async function createPost(req: Request, res: Response) {
 export async function getPosts(req: Request, res: Response) {
 	const offset = Number(req.query["offset"]) || 0;
 	const limit = Number(req.query["limit"]) || 5;
+	const user_id = Number(req.query["user_id"]) || undefined;
 
 	const result = await sql`
         SELECT "user".pseudo, post.*
         FROM post
         JOIN "user"
             ON "user".id = post.user_id
+        ${user_id ? sql`WHERE post.user_id = ${user_id}` : sql``}
         ORDER BY post.created_at DESC
         LIMIT ${limit}
         OFFSET ${offset}
