@@ -8,10 +8,18 @@ export default function Register() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/;
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         console.log(e);
         e.preventDefault();
+
+         if (!passwordRegex.test(password)) {
+        alert(
+            "Le mot de passe doit contenir au moins 6 caractères, une majuscule, un chiffre et un symbole."
+        );
+        return;
+    }
 
         if (password !== confirmPassword) {
             alert('Les mots de passe ne correspondent pas 🥝');
