@@ -1,29 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import useSWR from "swr";
 import type { Post } from "./types";
 
-const limit = 5 as const;
+const initialLimit = 5;
 
-export default function PostList({ postToAdd }: { postToAdd: Post | null }) {
-  const [offset, setOffset] = useState(0);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const isMountedRef = useRef(false);
-  const jwt = localStorage.getItem("jwt");
-  console.log("JWT:", jwt);
+export default function PostList() {
+	const [limit, setLimit] = useState(initialLimit);
 
-  useEffect(() => {
-    if (!postToAdd) return;
+	const { data: posts, isLoading } = useSWR<Post[]>(
+		`http://localhost:3000/post?limit=${limit}`,
+		url => fetch(url).then(res => res.json()),
+		{ keepPreviousData: true }
+	);
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPosts((prev) => [postToAdd, ...prev]);
-  }, [postToAdd]);
+	if (isLoading || !posts) return "Loading...";
 
-  useEffect(() => {
-    if (!isMountedRef.current) {
-      isMountedRef.current = true;
-      return;
-    }
+	return (
+		<div className="flex flex-col gap-2">
+			{posts.map(post => (
+				<div key={post.id}>{post.content}</div>
+			))}
 
+<<<<<<< HEAD
     async function fetchPosts() {
       const response: Post[] = await fetch(
         `http://localhost:3000/post/?offset=${offset}&limit=${limit}`,
@@ -59,4 +57,14 @@ export default function PostList({ postToAdd }: { postToAdd: Post | null }) {
       </button>
     </div>
   );
+=======
+			<button
+				type="button"
+				onClick={() => setLimit(prev => prev + initialLimit)}
+			>
+				Load more...
+			</button>
+		</div>
+	);
+>>>>>>> 9c59f581707fdea0c6e51038805e9c3f2b45ec35
 }
