@@ -8,7 +8,6 @@ CREATE TABLE "user" (
 CREATE TABLE "post" (   
   "id" BIGSERIAL PRIMARY KEY,
   "content" text NOT NULL,
-  "archivage" bool NOT NULL,
   "user_id" int NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
