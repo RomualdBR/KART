@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function Post() {
+export default function PostForm() {
 	const [error, setError] = useState("");
 
 	async function createPost(formData: FormData) {
@@ -14,7 +14,7 @@ export default function Post() {
 			return;
 		}
 
-		const response = await fetch(`http://localhost:3000/auth/post`, {
+		const response = await fetch(`http://localhost:3000/post`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
@@ -26,16 +26,15 @@ export default function Post() {
 	}
 
 	return (
-		<>
-			<h1>Posts Page</h1>
-			<form action={createPost} className="flex gap-3 items-end">
-				<div className="flex flex-col ">
-					<textarea name="content" className="border p-1" />
-					{error && <span>{error}</span>}
-				</div>
+		<form action={createPost} className="flex gap-3 items-end">
+			<div className="flex flex-col ">
+				<textarea name="content" className="border p-1" />
+				{error && <span>{error}</span>}
+			</div>
 
-				<button type="submit" className="h-min">Kart</button>
-			</form>
-		</>
+			<button type="submit" className="h-min">
+				Kart
+			</button>
+		</form>
 	);
 }

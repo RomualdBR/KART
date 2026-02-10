@@ -1,7 +1,7 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/NavBar"
-import Post from "./pages/Post"
+import Post from "./pages/post"
 import Profile from "./pages/Profile"
 import Register from "./pages/auth/register"
 import Login from "./pages/auth/login"
