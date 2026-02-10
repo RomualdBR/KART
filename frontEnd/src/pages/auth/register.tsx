@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import './auth.css';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../utils/context';
 
 export default function Register() {
     const [pseudo, setPseudo] = useState('');
@@ -9,6 +11,9 @@ export default function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/;
+
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         console.log(e);
@@ -35,6 +40,11 @@ export default function Register() {
             },
             body: JSON.stringify({ pseudo: pseudo, email: email, password: password }),
         }).then(res => res.json());
+
+        if (response.token) {
+            login(response.token)
+            navigate('/')
+        }
 
         console.log(response);
     };
