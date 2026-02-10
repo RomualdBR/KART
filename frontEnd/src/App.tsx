@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/NavBar"
 import Post from "./pages/Post"
 import Profile from "./pages/Profile"
-import Register from "./pages/Register"
-import Login from "./pages/Login"
+import Register from "./pages/auth/register"
+import Login from "./pages/auth/login"
 
 
 function App() {
