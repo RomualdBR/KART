@@ -1,9 +1,18 @@
 import express from "express";
-import sql from "./connection.ts"
-import { log } from "node:console";
+import { userLogin, userRegister } from "./controllers/auth.ts"
+import cors from "cors";
 
 const app = express();
 const PORT = 3000;
+
+const corsOptions = {
+	origin: '*',
+	credentials: true,
+	optionSuccessStatus: 200,
+}
+
+app.use(cors(corsOptions))
+app.use(express.json());
 
 app.listen(PORT, error => {
 	if (!error)
@@ -18,3 +27,10 @@ app.get('/kiwi', (req, res) => {
 	res.send('Yokoso 🥝')
 })
 
+app.get("/", (_req, res) => {
+	res.json({ message: "Yokoso" });
+});
+
+// auth
+app.post("/auth/login/", userLogin);
+app.post("/auth/register/", userRegister);
