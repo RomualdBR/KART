@@ -34,6 +34,8 @@ export default function PostList({ postToAdd }: { postToAdd: Post | null }) {
           },
         },
       ).then((res) => res.json());
+      
+      console.log("Fetched posts:", response);
 
       setIsLoading(false);
       setPosts((prev) => [...prev, ...response]);
