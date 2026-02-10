@@ -5,14 +5,15 @@ import Profile from "./pages/profile";
 import Register from "./pages/auth/register";
 import Login from "./pages/auth/login";
 import AuthProvider from "./utils/auth";
+import ProtectedRoute from "./components/protectedRoutes";
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Post />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/" element={<ProtectedRoute><Post /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute >} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>
