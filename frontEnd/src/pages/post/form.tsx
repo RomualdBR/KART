@@ -1,11 +1,7 @@
 import { useState } from "react";
-import type { Post } from "./types";
+import { mutate } from "swr";
 
-export default function PostForm({
-	setPostToAdd
-}: {
-	setPostToAdd: React.Dispatch<React.SetStateAction<Post | null>>;
-}) {
+export default function PostForm() {
 	const [error, setError] = useState("");
 
 	async function createPost(formData: FormData) {
@@ -19,13 +15,19 @@ export default function PostForm({
 			return;
 		}
 
-		const response = await fetch(`http://localhost:3000/post`, {
+		await fetch(`http://localhost:3000/post`, {
 			method: "POST",
-			headers: { "Content-Type": "application/json" , Authorization: `Bearer ${localStorage.getItem("jwt")}`},
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("jwt")}`
+			},
 			body: JSON.stringify({ content })
 		}).then(res => res.json());
 
-		setPostToAdd(response);
+		mutate(
+			key =>
+				typeof key === "string" && key.startsWith("http://localhost:3000/post")
+		);
 	}
 
 	return (
