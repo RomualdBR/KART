@@ -1,20 +1,20 @@
 import { Request, Response } from "express";
-import { User } from "../models/user";
 import sql from "../connection";
+import { signJWT } from "../jwt";
 
 export async function userLogin(req: Request, res: Response) {
 
     const email: string = req.query["email"] as string;
     const password: string = req.query["password"] as string;   
 
-    const user = new User(0, "", email, password);
-    const result = await user.login(email, password);
-    if (!result) {
+    const resp = await sql`SELECT * FROM "user" WHERE mail = ${email} AND password = ${password}`;
+    if (!resp) {
         res.json({ message: "invalid email or password" });
         return;
     }
 
-    res.json(result);
+    const token = signJWT({ id: resp[0].id, email: resp[0].email });
+    res.json({ token, resp });
 }
 
 export async function userRegister(req: Request, res: Response) {
@@ -36,13 +36,11 @@ export async function userRegister(req: Request, res: Response) {
         VALUES (${pseudo}, ${email}, ${password})
         RETURNING id
     `
-
-    console.log(result)
-
     if (!result) {
         res.json({ message: "invalid email or password" });
         return;
     }
 
-    res.json(result);
+    const token = signJWT({ id: result[0].id, email: result[0].email });
+    res.json({ token, result });
 }
