@@ -7,10 +7,11 @@ export async function getConnectedUser(req: Request, res: Response) {
     const authHeader = req.headers.authorization;
     if (!authHeader) throw new Error("No token");
 
-    const token = authHeader.replace("Bearer ", "");
+    const jwt = authHeader.replace("Bearer ", "");
+
     const { id } = jsonwebtoken.verify(
-      token,
-      process.env.JWT_SECRET as string,
+      jwt,
+      process.env.SECRET_KEY as string,
     ) as { id: number };
 
     const result = await sql`

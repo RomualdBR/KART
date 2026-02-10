@@ -5,7 +5,7 @@ import { signJWT } from "../jwt";
 export async function userLogin(req: Request, res: Response) {
 
     const mail: string = req.query["mail"] as string;
-    const password: string = req.query["password"] as string;
+    const password: string = req.query["password"] as string;   
 
     const resp = await sql`SELECT * FROM "user" WHERE mail = ${mail} AND password = ${password}`;
     if (!resp) {
@@ -22,12 +22,11 @@ export async function userRegister(req: Request, res: Response) {
     const pseudo: string = req.body["pseudo"];
     const mail: string = req.body["mail"];
     const password: string = req.body["password"];
-    console.log("test");
 
-    if (!passwordRegex.test(password)) {
-        res.json({
-            message:
-                "Le mot de passe doit contenir au moins 6 caractères, une majuscule, un chiffre et un symbole."
+    if(!passwordRegex.test(password)) {
+        res.json({ 
+            message: 
+            "Le mot de passe doit contenir au moins 6 caractères, une majuscule, un chiffre et un symbole." 
         });
         return;
     }

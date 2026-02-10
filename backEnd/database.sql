@@ -2,7 +2,8 @@ CREATE TABLE "user" (
   "id" BIGSERIAL PRIMARY KEY,
   "pseudo" text NOT NULL,
   "password" text NOT NULL,
-  "mail" text NOT NULL
+  "mail" text NOT NULL,
+  "private" boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE "post" (   
