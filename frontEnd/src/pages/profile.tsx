@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 
 export default function Profile() {
   const [user, setUser] = useState<{ id: number; pseudo: string; mail: string } | null>(null);
+  const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {
     const fetchUser = async () => {
       console.log("Fetching user data...");
-      const jwt = localStorage.getItem("jwt");
       if (!jwt){
         return console.error("No token found, user is not authenticated");
       }
 
       try {
-        const response = await fetch("http://localhost:3000/api/user/", {
+        const response = await fetch("http://localhost:3000/user/", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,

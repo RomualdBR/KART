@@ -1,13 +1,23 @@
 import { Request, Response } from "express";
 import sql from "../connection";
+import jsonwebtoken from "jsonwebtoken";
 
 export async function createPost(req: Request, res: Response) {
-	const content: string = req.body["content"];
+  const authHeader = req.headers.authorization;
+  console.log("Authorization header:", authHeader);
+  if (!authHeader) throw new Error("No token");
 
-	const result = await sql`
+  const jwt = authHeader.replace("Bearer ", "");
+
+  const { id } = jsonwebtoken.verify(jwt, process.env.SECRET_KEY as string) as {
+    id: number;
+  };
+  const content: string = req.body["content"];
+
+  const result = await sql`
         WITH inserted_post AS (
 			INSERT INTO post (content, user_id)
-			VALUES (${content}, ${4})
+			VALUES (${content}, ${id})
 			RETURNING *
 		)
 		SELECT "user".pseudo, inserted_post.*
@@ -16,15 +26,15 @@ export async function createPost(req: Request, res: Response) {
 			ON "user".id = inserted_post.user_id
     `;
 
-	res.json(result[0]);
+  res.json(result[0]);
 }
 
 export async function getPosts(req: Request, res: Response) {
-	const offset = Number(req.query["offset"]) || 0;
-	const limit = Number(req.query["limit"]) || 5;
-	const user_id = Number(req.query["user_id"]) || undefined;
+  const offset = Number(req.query["offset"]) || 0;
+  const limit = Number(req.query["limit"]) || 5;
+  const user_id = Number(req.query["user_id"]) || undefined;
 
-	const result = await sql`
+  const result = await sql`
         SELECT "user".pseudo, post.*
         FROM post
         JOIN "user"
@@ -35,5 +45,5 @@ export async function getPosts(req: Request, res: Response) {
         OFFSET ${offset}
     `;
 
-	res.json(result);
+  res.json(result);
 }

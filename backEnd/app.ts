@@ -36,9 +36,9 @@ app.get("/", (_req, res) => {
 // auth
 app.post("/auth/login/", userLogin);
 app.post("/auth/register/", userRegister);
-app.post("/post", createPost);
-app.get("/post", getPosts);
+app.post("/post/", createPost);
+app.get("/post/", getPosts);
 
 // user
 
-app.get("/api/user/", getConnectedUser);
+app.get("/user/", getConnectedUser);
