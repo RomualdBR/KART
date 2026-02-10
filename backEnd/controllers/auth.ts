@@ -1,46 +1,61 @@
 import { Request, Response } from "express";
 import sql from "../connection";
 import { signJWT } from "../jwt";
+import bcrypt from "bcrypt";
 
 export async function userLogin(req: Request, res: Response) {
+    const { mail, password } = req.body;
 
-    const mail: string = req.body["mail"] as string;
-    const password: string = req.body["password"] as string;
+    const resp = await sql`
+        SELECT id, mail, password
+        FROM "user"
+        WHERE mail = ${mail}
+    `;
 
-    const resp = await sql`SELECT * FROM "user" WHERE mail = ${mail} AND password = ${password}`;
-    if (!resp) {
-        res.json({ message: "invalid mail or password" });
+    if (!resp.length) {
+        res.status(401).json({ message: "Invalid mail or password" });
         return;
     }
 
-    const token = signJWT({ id: resp[0].id, mail: resp[0].mail });
-    res.json({ token, resp });
+    const user = resp[0];
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+
+    if (!isValidPassword) {
+        res.status(401).json({ message: "Invalid mail or password" });
+        return;
+    }
+
+    const token = signJWT({ id: user.id, mail: user.mail });
+    res.json({ token });
 }
 
 export async function userRegister(req: Request, res: Response) {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/;
-    const pseudo: string = req.body["pseudo"];
-    const mail: string = req.body["mail"];
-    const password: string = req.body["password"];
+    const { pseudo, mail, password } = req.body;
 
     if (!passwordRegex.test(password)) {
-        res.json({
+        res.status(400).json({
             message:
                 "Le mot de passe doit contenir au moins 6 caractères, une majuscule, un chiffre et un symbole."
         });
         return;
     }
 
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     const result = await sql`
         INSERT INTO "user" ("pseudo", "mail", "password")
-        VALUES (${pseudo}, ${mail}, ${password})
-        RETURNING id
-    `
-    if (!result) {
-        res.json({ message: "invalid mail or password" });
+        VALUES (${pseudo}, ${mail}, ${hashedPassword})
+        RETURNING id, mail
+    `;
+
+    if (!result.length) {
+        res.status(400).json({ message: "Erreur lors de l'inscription" });
         return;
     }
 
     const token = signJWT({ id: result[0].id, mail: result[0].mail });
-    res.json({ token, result });
+    res.json({ token });
 }
