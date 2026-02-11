@@ -1,19 +1,24 @@
 import express from "express";
-import { userLogin, userRegister } from "./controllers/auth.ts"
+import { userLogin, userRegister } from "./controllers/auth.ts";
 import { getUser, getLoggedUserInfo } from "./controllers/user.ts";
 import cors from "cors";
-import { createPost, getPosts, deletePost } from "./controllers/post.ts";
+import {
+	createPost,
+	getPosts,
+	setLike,
+	deletePost
+} from "./controllers/post.ts";
 
 const app = express();
 const PORT = 3000;
 
 const corsOptions = {
-	origin: '*',
+	origin: "*",
 	credentials: true,
-	optionSuccessStatus: 200,
-}
+	optionSuccessStatus: 200
+};
 
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.listen(PORT, error => {
@@ -25,9 +30,9 @@ app.listen(PORT, error => {
 });
 
 // Ne toucher pas à cette route stp connard
-app.get('/kiwi', (req, res) => {
-	res.send('Yokoso 🥝')
-})
+app.get("/kiwi", (req, res) => {
+	res.send("Yokoso 🥝");
+});
 
 app.get("/", (_req, res) => {
 	res.json({ message: "Yokoso" });
@@ -41,9 +46,9 @@ app.post("/auth/register/", userRegister);
 app.post("/post/", createPost);
 app.get("/post/", getPosts);
 app.delete("/post/:id", deletePost);
+app.post("/like/:post_id", setLike);
 
 // user
-app.get("/user", getUser);      
-app.get("/user/:id", getUser);  
-app.get("/userlogged", getLoggedUserInfo);  
-
+app.get("/user", getUser);
+app.get("/user/:id", getUser);
+app.get("/userlogged", getLoggedUserInfo);
