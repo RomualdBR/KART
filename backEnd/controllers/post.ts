@@ -136,3 +136,9 @@ export async function deletePost(req: Request, res: Response) {
 
   res.json({ message: "Post deleted successfully" });
 }
+
+export async function getPostId(req: Request, res: Response) {
+  const post_id = Number(req.params.post_id);
+  const result = await sql`SELECT * FROM post WHERE id = ${post_id}`;
+  res.json(result[0]);
+}

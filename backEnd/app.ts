@@ -2,12 +2,12 @@ import express from "express";
 import { userLogin, userRegister } from "./controllers/auth.ts";
 import { getUser, getLoggedUserInfo } from "./controllers/user.ts";
 import cors from "cors";
+
 import {
-	createPost,
-	getPosts,
-	setLike,
+	createPost, getPosts, getPostId, setLike,
 	deletePost
 } from "./controllers/post.ts";
+import { createComment, getComments } from "./controllers/comment.ts";
 
 const app = express();
 const PORT = 3000;
@@ -42,11 +42,17 @@ app.get("/", (_req, res) => {
 app.post("/auth/login/", userLogin);
 app.post("/auth/register/", userRegister);
 
+
 // post
 app.post("/post/", createPost);
 app.get("/post/", getPosts);
 app.delete("/post/:id", deletePost);
 app.post("/like/:post_id", setLike);
+app.get("/post/:id", getPostId);
+
+// comment
+app.post("/comment/", createComment);
+app.get("/comment/", getComments);
 
 // user
 app.get("/user", getUser);

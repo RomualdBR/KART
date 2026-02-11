@@ -6,6 +6,7 @@ import Register from "./pages/auth/register";
 import Login from "./pages/auth/login";
 import AuthProvider from "./utils/auth";
 import ProtectedRoute from "./components/protectedRoutes";
+import PostDetails from "./pages/post_details/post_details";
 
 function App() {
   return (
@@ -36,8 +37,22 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route
+            path="/post/:id"
+            element={
+              <ProtectedRoute>
+                <PostDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/login"
+            element={<Login />}
+          />
+          <Route
+            path="/register"
+            element={<Register />}
+          />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

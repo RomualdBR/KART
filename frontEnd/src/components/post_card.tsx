@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import type { Post } from "../pages/post/types";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../utils/context";
 
 export default function PostCard({

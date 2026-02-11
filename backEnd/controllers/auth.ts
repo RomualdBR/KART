@@ -27,7 +27,7 @@ export async function userLogin(req: Request, res: Response) {
   }
 
   const token = signJWT({ id: user.id, mail: user.mail });
-  res.json({ token });
+  res.json({ token, id: user.id });
 }
 
 export async function userRegister(req: Request, res: Response) {
@@ -57,5 +57,5 @@ export async function userRegister(req: Request, res: Response) {
   }
 
   const token = signJWT({ id: result[0].id, mail: result[0].mail });
-  res.json({ token });
+  res.json({ token, id: result[0].id });
 }
