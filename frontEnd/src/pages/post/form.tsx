@@ -33,15 +33,28 @@ export default function PostForm() {
 	}
 
 	return (
-		<form action={createPost} className="flex gap-3 items-end">
-			<div className="flex flex-col ">
-				<textarea name="content" className="border p-1" />
-				{error && <span>{error}</span>}
-			</div>
+		<div className="bg-white rounded-xl shadow-md p-6 mb-6">
+			<div className="flex items-start gap-4">
+				<form action={createPost} className="flex-1">
+					<textarea
+						name="content"
+						className="w-full border-2 border-gray-200 rounded-lg p-4 text-gray-800 resize-none transition-colors"
+						rows={3}
+					/>
+					{error && (
+						<p className="text-red-500 text-sm mt-2">{error}</p>
+					)}
 
-			<button type="submit" className="h-min">
-				Kart
-			</button>
-		</form>
+					<div className="flex mt-4">
+						<button
+							type="submit"
+							className="px-6 py-2 bg-blue text-white font-medium rounded-lg"
+						>
+							Publier
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
 	);
 }

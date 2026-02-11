@@ -60,11 +60,11 @@ export default function Profile() {
 
 
   useEffect(() => {
-  if (hasFetched.current) return;
-  hasFetched.current = true;
+    if (hasFetched.current) return;
+    hasFetched.current = true;
 
-  fetchUser();
-}, []);
+    fetchUser();
+  }, []);
 
   return (
     <>

@@ -1,1 +1,1 @@
-export type Post = { id: number; content: string };
+export type Post = { id: number; pseudo: string; content: string; created_at: string };
