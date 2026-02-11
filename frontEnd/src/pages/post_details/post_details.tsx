@@ -2,7 +2,6 @@ import { useLocation, useParams } from "react-router-dom";
 import Header from "../../components/header";
 import PostCard from "../../components/post_card";
 import type { Post } from "../post/types";
-// import { useState } from "react";
 import { useAuth } from "../../utils/context";
 import { useState, useEffect } from "react";
 import CommentCard from "../../components/comment_card";
@@ -14,6 +13,8 @@ export default function PostDetails() {
     const { id } = useParams();
 
     const { post, user_id } = useLocation().state ?? { post: null, user_id: null } as { post: Post | null, user_id: number | null };
+
+    console.log(user_id, "user_id");
 
     async function createComment(formData: FormData) {
         "use server";

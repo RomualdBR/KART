@@ -3,13 +3,13 @@ import PostList from "./list";
 import { useAuth } from "../../utils/context";
 import { useState } from "react";
 import type { Post } from "./types";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Post() {
 	const { logout } = useAuth();
 	const navigate = useNavigate();
 	const [postToAdd, setPostToAdd] = useState<Post | null>(null);
-
+	const { user_id } = useLocation().state ?? { user_id: null } as { user_id: number | null };
 	return (
 		<div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
 			<header className="sticky top-0 z-50 bg-white shadow-md">
@@ -36,7 +36,7 @@ export default function Post() {
 
 			<main className="max-w-7xl mx-auto px-4 py-8">
 				<PostForm setPostToAdd={setPostToAdd} />
-				<PostList postToAdd={postToAdd} />
+				<PostList postToAdd={postToAdd} user_id={user_id} />
 			</main>
 		</div>
 	);
