@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { Post } from "../pages/post/types";
 
 export default function PostCard({ post }: { post: Post }) {
@@ -6,11 +7,15 @@ export default function PostCard({ post }: { post: Post }) {
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
             <div className="p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
+                    <Link to={`/profile/${post.user_id}`}>
                     <div className={`w-12 h-12 rounded-full  bg-green-600 flex items-center justify-center text-white font-bold text-lg`}>
                         K
                     </div>
+                    </Link>
                     <div>
-                        <h3 className="font-semibold text-gray-900">{post.pseudo}</h3>
+                        <Link to={`/profile/${post.user_id}`}>
+                            <h3 className="font-semibold text-gray-900">{post.pseudo}</h3>
+                        </Link>
                         <p className="text-sm text-gray-500">{post.created_at}</p>
                     </div>
                 </div>
@@ -23,7 +28,7 @@ export default function PostCard({ post }: { post: Post }) {
                 <p className="text-gray-700 leading-relaxed">{post.content}</p>
             </div>
 
-            <div className={`w-full h-20 bg-gradient-to-br bg-green-200`}>
+            <div className={`w-full h-20 bg-linear-to-br bg-green-200`}>
                 <div className="w-full h-full flex items-center justify-center text-white text-6xl opacity-20">
                     🥝
                 </div>
