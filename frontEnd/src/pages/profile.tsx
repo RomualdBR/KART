@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 import type { Post } from "./post/types";
 import { useAuth } from "../utils/context";
 
@@ -10,10 +11,15 @@ export default function Profile() {
     pseudo: string;
     mail: string;
   } | null>(null);
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [offset, setOffset] = useState(0);
   const hasFetched = useRef(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { logout } = useAuth();
+  
+  const { id } = useParams();
+  const jwt = localStorage.getItem("jwt");
 
   const fetchUserPosts = async (userData: any) => {
     const response: Post[] = await fetch(
@@ -32,14 +38,14 @@ export default function Profile() {
 
 
   const fetchUser = async () => {
-    console.log("Fetching user data...");
-    const jwt = localStorage.getItem("jwt");
     if (!jwt) {
       return console.error("No token found, user is not authenticated");
     }
 
     try {
-      const response = await fetch("http://localhost:3000/user/", {
+      setIsLoading(true);
+
+      const response = await fetch(`http://localhost:3000/user/${id ?? ""}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${jwt}`,
@@ -49,8 +55,9 @@ export default function Profile() {
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
-        fetchUserPosts(userData);
-        console.log("User data fetched successfully:", userData);
+
+        await fetchUserPosts(userData);
+        setIsLoading(false);
       } else {
         console.error("Failed to fetch user data");
       }
@@ -59,13 +66,16 @@ export default function Profile() {
     }
   };
 
-
   useEffect(() => {
     if (hasFetched.current) return;
     hasFetched.current = true;
 
     fetchUser();
   }, []);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
