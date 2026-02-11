@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import PostCard from "./post-card";
 import type { Post } from "./types";
+import PostCard from "../../components/post_card";
 
 const limit = 5 as const;
 

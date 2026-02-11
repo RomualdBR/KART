@@ -7,6 +7,7 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState('');
 
     const { login } = useAuth();
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ export default function Login() {
             login(response.token);
             navigate("/");
         } else {
-            alert(response.message);
+            setError(response.message);
         }
 
     };
@@ -87,7 +88,7 @@ export default function Login() {
                             </button>
                         </div>
                     </div>
-
+                    {error && <div className="bg-red-500 opacity-60   text-white p-2 rounded-md text-sm mt-2">{error}</div>}
                     <button type="submit" className="submit-button">
                         Sign Up
                     </button>

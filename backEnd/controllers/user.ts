@@ -1,22 +1,24 @@
 import { Request, Response } from "express";
 import sql from "../connection";
-import jsonwebtoken from "jsonwebtoken";
+import { verifyJWT } from "../jwt";
 
-export async function getConnectedUser(req: Request, res: Response) {
+export async function getUser(req: Request, res: Response) {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader) throw new Error("No token");
+    if (!authHeader) {
+      return res.status(401).json({ message: "No token" });
+    }
 
-    const jwt = authHeader.replace("Bearer ", "");
+    const token = authHeader.replace("Bearer ", "");
+    const { id } = verifyJWT(token);
 
-    const { id } = jsonwebtoken.verify(
-      jwt,
-      process.env.SECRET_KEY as string,
-    ) as { id: number };
+    const idToSearch = req.params.id 
+    ? Number(req.params.id) 
+    : id;
 
     const result = await sql`
       SELECT * FROM "user"
-      WHERE id = ${id}
+      WHERE id = ${idToSearch}
     `;
 
     if (result.length === 0) {

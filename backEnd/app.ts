@@ -1,6 +1,6 @@
 import express from "express";
 import { userLogin, userRegister } from "./controllers/auth.ts"
-import { getConnectedUser } from "./controllers/user.ts";
+import { getUser } from "./controllers/user.ts";
 import cors from "cors";
 import { createPost, getPosts } from "./controllers/post.ts";
 
@@ -40,5 +40,6 @@ app.post("/post/", createPost);
 app.get("/post/", getPosts);
 
 // user
+app.get("/user", getUser);      
+app.get("/user/:id", getUser);    
 
-app.get("/user/", getConnectedUser);
