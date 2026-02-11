@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./auth.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../utils/context";
+import UserInfo from "../../components/userInfo.";
 
 export default function Register() {
     const [pseudo, setPseudo] = useState("");
@@ -31,8 +32,6 @@ export default function Register() {
             return;
         }
 
-        console.log("bonjour tout le monde");
-
         const response = await fetch(`http://localhost:3000/auth/register/`, {
             method: "POST",
             headers: {
@@ -42,6 +41,7 @@ export default function Register() {
         }).then(res => res.json());
 
         if (response.token) {
+            UserInfo(response.token);
             login(response.token);
             navigate("/");
         }

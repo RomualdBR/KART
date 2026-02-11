@@ -14,29 +14,30 @@ export default function Profile() {
   } | null>(null);
 
   const [posts, setPosts] = useState<Post[]>([]);
-  const [offset, setOffset] = useState(0);
+  const [cursor, setCursor] = useState("");
   const hasFetched = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
   const { logout } = useAuth();
-
+  const userinfoString = localStorage.getItem("userInfo");
+  const userinfo = userinfoString ? JSON.parse(userinfoString) : null;
+  
   const { id } = useParams();
   const jwt = localStorage.getItem("jwt");
 
-  const fetchUserPosts = async (userData: any) => {
-    const response: Post[] = await fetch(
-      `http://localhost:3000/post/?offset=${offset}&limit=${limit}&user_id=${userData?.id}`,
+  const fetchUserPosts = async (id: number) => {
+    await fetch(
+      `http://localhost:3000/post?cursor=${cursor}&limit=${limit}&user_id=${id}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       },
-    ).then((res) => res.json());
-
-    setPosts((prev) => [...prev, ...response]);
+    )
+      .then((res) => res.json())
+      .then((data: { posts: Post[] ; nextCursor: string }) => {
+        setPosts((prev) => [...prev, ...data.posts]);
+        setCursor(data.nextCursor);
+      });
   };
-
-
 
   const fetchUser = async () => {
     if (!jwt) {
@@ -57,13 +58,37 @@ export default function Profile() {
         const userData = await response.json();
         setUser(userData);
 
-        await fetchUserPosts(userData);
+        await fetchUserPosts(userData.id);
         setIsLoading(false);
       } else {
         console.error("Failed to fetch user data");
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
+    }
+  };
+
+  const handleDelete = async (postId: number) => {
+    if (!jwt) {
+      return console.error("No token found, user is not authenticated");
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3000/post/${postId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      if (response.ok) {
+        setPosts((prev) => prev.filter((post) => post.id !== postId));
+      } else {
+        const data = await response.json();
+        console.error(data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
     }
   };
 
@@ -101,24 +126,27 @@ export default function Profile() {
       {user ? (
         <div>
           <div className="p-4">
-            <h2 className="text-2xl font-bold text-gray-800">Profile Information</h2>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Profile Information
+            </h2>
             <p className="text-gray-600">ID: {user.id}</p>
             <p className="text-gray-600">Pseudo: {user.pseudo}</p>
             <p className="text-gray-600">Email: {user.mail}</p>
           </div>
           <div className="grid grid-cols-3 gap-4 lg:gap-6 p-4">
             {posts.map((post) => (
-              <PostCard key={post.id} post={post} />
+              <PostCard key={post.id} post={post} onDelete={handleDelete} currentUserId={userinfo.id} />
             ))}
-
           </div>
           <div className="flex justify-center mt-8">
-            <button type="button" onClick={() => setOffset((prev) => prev + limit)}>
+            <button
+              type="button"
+              onClick={() => fetchUserPosts(user.id)}
+            >
               Load more...
             </button>
           </div>
         </div>
-
       ) : (
         <p className="text-gray-600">Loading user information...</p>
       )}

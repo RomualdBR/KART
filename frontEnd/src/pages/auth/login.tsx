@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './auth.css';
 import { useAuth } from '../../utils/context';
 import { useNavigate } from 'react-router-dom';
+import UserInfo from '../../components/userInfo.';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -23,6 +24,7 @@ export default function Login() {
         }).then(res => res.json());
 
         if (response.token) {
+            UserInfo(response.token);
             login(response.token);
             navigate("/");
         } else {

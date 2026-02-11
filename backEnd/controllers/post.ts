@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import sql from "../connection";
 import jsonwebtoken from "jsonwebtoken";
 import { PendingQuery, Row } from "postgres";
+import { verifyJWT } from "../jwt";
 
 export async function createPost(req: Request, res: Response) {
 	const authHeader = req.headers.authorization;
@@ -58,4 +59,27 @@ export async function getPosts(req: Request, res: Response) {
 	const nextCursor = posts.length > 0 ? posts[posts.length - 1].created_at : null;
 
 	res.json({ posts, nextCursor });
+}
+
+export async function deletePost(req: Request, res: Response) {
+	const authHeader = req.headers.authorization;
+	if (!authHeader) throw new Error("No token");
+
+	const jwt = authHeader.replace("Bearer ", "");
+
+	const { id } = verifyJWT(jwt);
+
+	const postId = Number(req.params.id);
+
+	const result = await sql`
+		DELETE FROM post
+		WHERE id = ${postId} AND user_id = ${id}
+		RETURNING *
+	`;
+
+	if (result.length === 0) {
+		return res.status(404).json({ message: "Post not found or not authorized" });
+	}
+
+	res.json({ message: "Post deleted successfully" });
 }

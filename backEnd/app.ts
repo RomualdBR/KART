@@ -1,8 +1,8 @@
 import express from "express";
 import { userLogin, userRegister } from "./controllers/auth.ts"
-import { getUser } from "./controllers/user.ts";
+import { getUser, getLoggedUserInfo } from "./controllers/user.ts";
 import cors from "cors";
-import { createPost, getPosts } from "./controllers/post.ts";
+import { createPost, getPosts, deletePost } from "./controllers/post.ts";
 
 const app = express();
 const PORT = 3000;
@@ -36,10 +36,14 @@ app.get("/", (_req, res) => {
 // auth
 app.post("/auth/login/", userLogin);
 app.post("/auth/register/", userRegister);
+
+// post
 app.post("/post/", createPost);
 app.get("/post/", getPosts);
+app.delete("/post/:id", deletePost);
 
 // user
 app.get("/user", getUser);      
-app.get("/user/:id", getUser);    
+app.get("/user/:id", getUser);  
+app.get("/userlogged", getLoggedUserInfo);  
 
