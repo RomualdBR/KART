@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import type { Post } from "./post/types";
+import { useAuth } from "../utils/context";
 
 const limit = 5 as const;
 
@@ -11,10 +12,8 @@ export default function Profile() {
   } | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [offset, setOffset] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const hasFetched = useRef(false);
-
-  const jwt = localStorage.getItem("jwt");
+  const { logout } = useAuth();
 
   const fetchUserPosts = async (userData: any) => {
     const response: Post[] = await fetch(
@@ -27,12 +26,14 @@ export default function Profile() {
       },
     ).then((res) => res.json());
 
-    setIsLoading(false);
     setPosts((prev) => [...prev, ...response]);
   };
 
+
+
   const fetchUser = async () => {
     console.log("Fetching user data...");
+    const jwt = localStorage.getItem("jwt");
     if (!jwt) {
       return console.error("No token found, user is not authenticated");
     }
@@ -67,29 +68,45 @@ export default function Profile() {
   }, []);
 
   return (
-    <>
-      <div>
-        <h1>Profile Page</h1>
-        {user ? (
-          <div>
-            <h2>Profile Information</h2>
-            <p>ID: {user.id}</p>
-            <p>Pseudo: {user.pseudo}</p>
-            <p>Email: {user.mail}</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <header className="sticky top-0 z-50 bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-gray-800">
+              Profile Page
+              <span>🥝</span>
+            </h1>
           </div>
-        ) : (
-          <p>Loading user information...</p>
-        )}
-      </div>
-      <div className="flex flex-col gap-2">
-        {posts.map((post) => (
-          <div key={post.id}>{post.content}</div>
-        ))}
+          <div className="flex items-center gap-4">
+            <button
+              onClick={logout}
+              className="px-5 py-2 text-sm font-medium text-white bg-red hover:bg-red-600 rounded-lg"
+            >
+              Déconnexion
+            </button>
+          </div>
+        </div>
+      </header>
+      {user ? (
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Profile Information</h2>
+          <p className="text-gray-600">ID: {user.id}</p>
+          <p className="text-gray-600">Pseudo: {user.pseudo}</p>
+          <p className="text-gray-600">Email: {user.mail}</p>
+          <div className="flex flex-col gap-2">
+            {posts.map((post) => (
+              <div key={post.id}>{post.content}</div>
+            ))}
 
-        <button type="button" onClick={() => setOffset((prev) => prev + limit)}>
-          Load more...
-        </button>
-      </div>
-    </>
+            <button type="button" onClick={() => setOffset((prev) => prev + limit)}>
+              Load more...
+            </button>
+          </div>
+        </div>
+
+      ) : (
+        <p className="text-gray-600">Loading user information...</p>
+      )}
+    </div>
   );
 }
