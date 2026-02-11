@@ -12,9 +12,7 @@ export async function getUser(req: Request, res: Response) {
     const token = authHeader.replace("Bearer ", "");
     const { id } = verifyJWT(token);
 
-    const idToSearch = req.params.id 
-    ? Number(req.params.id) 
-    : id;
+    const idToSearch = req.params.id ? Number(req.params.id) : id;
 
     const result = await sql`
       SELECT * FROM "user"
@@ -31,9 +29,7 @@ export async function getUser(req: Request, res: Response) {
   }
 }
 
-
 export async function getLoggedUserInfo(req: Request, res: Response) {
-
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -51,9 +47,8 @@ export async function getLoggedUserInfo(req: Request, res: Response) {
     if (result.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
-    
-    res.json(result[0]);
 
+    res.json(result[0]);
   } catch (error) {
     res.status(401).json({ message: "Invalid token" });
   }

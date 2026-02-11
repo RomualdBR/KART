@@ -10,8 +10,8 @@ CREATE TABLE "post" (
   "id" BIGSERIAL PRIMARY KEY,
   "content" text NOT NULL,
   "user_id" int NOT NULL,
-  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  "created_at" timestamp WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" timestamp WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "post_comment" (
@@ -19,8 +19,8 @@ CREATE TABLE "post_comment" (
   "content" text NOT NULL,
   "post_id" int NOT NULL,
   "user_id" int NOT NULL,
-  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  "created_at" timestamp WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" timestamp WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- but why
