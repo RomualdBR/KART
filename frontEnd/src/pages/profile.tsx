@@ -105,7 +105,7 @@ export default function Profile() {
           <p className="text-gray-600">Email: {user.mail}</p>
           <div className="flex flex-col gap-2">
             {posts.map((post) => (
-              <div key={post.id}>{post.content}</div>
+              <div className="bg-white rounded-xl shadow-md p-6 mb-6" key={post.id}> <p className="text-gray-700 leading-relaxed">{post.content}</p></div>
             ))}
 
             <button type="button" onClick={() => setOffset((prev) => prev + limit)}>
