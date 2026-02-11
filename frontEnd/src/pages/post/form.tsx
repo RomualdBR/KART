@@ -1,8 +1,12 @@
 import { useState } from "react";
-import { mutate } from "swr";
 import { useAuth } from "../../utils/context";
+import type { Post } from "./types";
 
-export default function PostForm() {
+export default function PostForm({
+	setPostToAdd
+}: {
+	setPostToAdd: React.Dispatch<React.SetStateAction<Post | null>>;
+}){
 	const [error, setError] = useState("");
 	const { token } = useAuth();
 
@@ -17,7 +21,7 @@ export default function PostForm() {
 			return;
 		}
 
-		await fetch(`http://localhost:3000/post`, {
+		const response = await fetch(`http://localhost:3000/post`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -26,10 +30,7 @@ export default function PostForm() {
 			body: JSON.stringify({ content })
 		}).then(res => res.json());
 
-		mutate(
-			key =>
-				typeof key === "string" && key.startsWith("http://localhost:3000/post")
-		);
+		setPostToAdd(response)
 	}
 
 	return (

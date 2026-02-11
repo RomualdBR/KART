@@ -1,20 +1,21 @@
 import { Request, Response } from "express";
 import sql from "../connection";
 import jsonwebtoken from "jsonwebtoken";
+import { PendingQuery, Row } from "postgres";
 
 export async function createPost(req: Request, res: Response) {
-  const authHeader = req.headers.authorization;
-  console.log("Authorization header:", authHeader);
-  if (!authHeader) throw new Error("No token");
+	const authHeader = req.headers.authorization;
+	console.log("Authorization header:", authHeader);
+	if (!authHeader) throw new Error("No token");
 
-  const jwt = authHeader.replace("Bearer ", "");
+	const jwt = authHeader.replace("Bearer ", "");
 
-  const { id } = jsonwebtoken.verify(jwt, process.env.SECRET_KEY as string) as {
-    id: number;
-  };
-  const content: string = req.body["content"];
+	const { id } = jsonwebtoken.verify(jwt, process.env.SECRET_KEY as string) as {
+		id: number;
+	};
+	const content: string = req.body["content"];
 
-  const result = await sql`
+	const result = await sql`
         WITH inserted_post AS (
 			INSERT INTO post (content, user_id)
 			VALUES (${content}, ${id})
@@ -26,24 +27,35 @@ export async function createPost(req: Request, res: Response) {
 			ON "user".id = inserted_post.user_id
     `;
 
-  res.json(result[0]);
+	res.json(result[0]);
 }
 
 export async function getPosts(req: Request, res: Response) {
-  const offset = Number(req.query["offset"]) || 0;
-  const limit = Number(req.query["limit"]) || 5;
-  const user_id = Number(req.query["user_id"]) || undefined;
+	const cursor = String(req.query["cursor"]);
+	const limit = Number(req.query["limit"]) || 5;
+	const user_id = Number(req.query["user_id"]) || undefined;
 
-  const result = await sql`
-        SELECT "user".pseudo, post.*
-        FROM post
-        JOIN "user"
-            ON "user".id = post.user_id
-        ${user_id ? sql`WHERE post.user_id = ${user_id}` : sql``}
-        ORDER BY post.created_at DESC
-        LIMIT ${limit}
-        OFFSET ${offset}
-    `;
+	const conditions: PendingQuery<Row[]>[] = [];
 
-  res.json(result);
+	function addToConditions(condition: PendingQuery<Row[]>) {
+		if (conditions.length > 0) conditions.push(sql`AND`);
+		conditions.push(condition);
+	}
+
+	if (user_id) addToConditions(sql`post.user_id = ${user_id}`);
+	if (cursor) addToConditions(sql`post.created_at < ${cursor}`);
+
+	const posts: { created_at: string }[] = await sql`
+    SELECT "user".pseudo, post.*
+    FROM post
+    JOIN "user"
+        ON "user".id = post.user_id
+    ${conditions.length > 0 ? sql`WHERE ${conditions}` : sql``}
+    ORDER BY post.created_at DESC
+    LIMIT ${limit}
+  `;
+
+	const nextCursor = posts.length > 0 ? posts[posts.length - 1].created_at : null;
+
+	res.json({ posts, nextCursor });
 }
