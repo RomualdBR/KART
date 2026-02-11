@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { mutate } from "swr";
+import { useAuth } from "../../utils/context";
 
 export default function PostForm() {
 	const [error, setError] = useState("");
+	const { token } = useAuth();
 
 	async function createPost(formData: FormData) {
 		"use server";
@@ -19,7 +21,7 @@ export default function PostForm() {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: `Bearer ${localStorage.getItem("jwt")}`
+				Authorization: `Bearer ${token}`
 			},
 			body: JSON.stringify({ content })
 		}).then(res => res.json());
