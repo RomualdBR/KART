@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Post } from "./types";
 import PostCard from "../../components/post_card";
+import { useAuth } from "../../utils/context";
 
 const limit = 5 as const;
 
 export default function PostList({ postToAdd }: { postToAdd: Post | null }) {
+	const { token } = useAuth();
 	const [cursor, setCursor] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState("");
@@ -14,7 +16,7 @@ export default function PostList({ postToAdd }: { postToAdd: Post | null }) {
 	const fetchPosts = useCallback(async () => {
 		await fetch(`http://localhost:3000/post/?cursor=${cursor}&limit=${limit}`, {
 			method: "GET",
-			headers: { "Content-Type": "application/json" }
+			headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
 		})
 			.then(res => res.json())
 			.then(({ posts, nextCursor }: { posts: Post[]; nextCursor: string }) => {
@@ -52,6 +54,7 @@ export default function PostList({ postToAdd }: { postToAdd: Post | null }) {
 		return (
 			<div className="text-xl text-red-500">An error occured: {error} 🥝</div>
 		);
+
 
 	return (
 		<div className="w-full">

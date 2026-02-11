@@ -2,7 +2,7 @@ import express from "express";
 import { userLogin, userRegister } from "./controllers/auth.ts"
 import { getUser } from "./controllers/user.ts";
 import cors from "cors";
-import { createPost, getPosts } from "./controllers/post.ts";
+import { createPost, getPosts, setLike } from "./controllers/post.ts";
 
 const app = express();
 const PORT = 3000;
@@ -38,6 +38,7 @@ app.post("/auth/login/", userLogin);
 app.post("/auth/register/", userRegister);
 app.post("/post/", createPost);
 app.get("/post/", getPosts);
+app.post("/like/:post_id", setLike);
 
 // user
 app.get("/user", getUser);      
