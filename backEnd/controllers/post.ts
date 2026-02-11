@@ -142,3 +142,22 @@ export async function getPostId(req: Request, res: Response) {
   const result = await sql`SELECT * FROM post WHERE id = ${post_id}`;
   res.json(result[0]);
 }
+
+export async function getLikeNumber(req: Request, res: Response) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) throw new Error("No token");
+
+  const jwt = authHeader.replace("Bearer ", "");
+
+  const { id } = verifyJWT(jwt);
+
+  const postId = Number(req.params.id);
+
+  const result = await sql`
+      SELECT COUNT(*) AS like_count
+      FROM post_like
+      WHERE post_id = ${postId}
+    `;
+
+  res.json({ likeCount: result[0].like_count });
+}

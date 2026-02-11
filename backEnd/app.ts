@@ -5,7 +5,7 @@ import cors from "cors";
 
 import {
 	createPost, getPosts, getPostId, setLike,
-	deletePost
+	deletePost, getLikeNumber
 } from "./controllers/post.ts";
 import { createComment, getComments } from "./controllers/comment.ts";
 
@@ -49,6 +49,7 @@ app.get("/post/", getPosts);
 app.delete("/post/:id", deletePost);
 app.post("/like/:post_id", setLike);
 app.get("/post/:id", getPostId);
+app.get("/post/:id/like", getLikeNumber);
 
 // comment
 app.post("/comment/", createComment);

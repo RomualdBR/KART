@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import type { Post } from "../pages/post/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../utils/context";
 
 export default function PostCard({
@@ -14,9 +14,11 @@ export default function PostCard({
 }) {
   const { token } = useAuth();
   const [isLiked, setIsLiked] = useState(post.is_liked);
+  const [likeCount, setLikeCount] = useState(0);
 
   const fetchLike = async () => {
     setIsLiked((prev) => !prev);
+    setLikeCount((prev) => prev + (isLiked ? -1 : 1));
 
     await fetch(`http://localhost:3000/like/${post.id}`, {
       method: "POST",
@@ -27,6 +29,22 @@ export default function PostCard({
       body: JSON.stringify({ like: !isLiked }),
     }).then((res) => res.json());
   };
+
+  const fetchLikeNumber = async () => {
+    const response = await fetch(`http://localhost:3000/post/${post.id}/like`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res) => res.json());
+
+    setLikeCount(Number(response.likeCount) || 0);
+  };
+
+  useEffect(() => {
+    fetchLikeNumber();
+  }, []);
 
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -68,12 +86,12 @@ export default function PostCard({
         <div className="w-full h-full flex items-center justify-center text-white text-6xl opacity-20">
           🥝
         </div>
-        <span
-          onClick={fetchLike}
-          className="absolute top-2 right-2 text-2xl cursor-pointer"
-        >
-          {isLiked ? "💚" : "🤍"}
-        </span>
+          <span
+            onClick={fetchLike}
+            className="absolute top-2 right-2 text-2xl cursor-pointer"
+          >
+            {likeCount} {isLiked ? "💚" : "🤍"}
+          </span>
       </div>
     </div>
   );
