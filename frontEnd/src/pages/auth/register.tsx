@@ -43,8 +43,10 @@ export default function Register() {
     if (response.token) {
       UserInfo(response.token);
       login(response.token);
-      navigate("/");
+      const user_id = response.id;
+      navigate("/", { state: { user_id: user_id } });
     }
+
 
     console.log(response);
   };
