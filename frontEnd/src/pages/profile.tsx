@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import type { Post } from "./post/types";
-import { useAuth } from "../utils/context";
 import PostCard from "../components/post_card";
+import Header from "../components/header";
 
 const limit = 5 as const;
 
@@ -17,7 +17,6 @@ export default function Profile() {
   const [cursor, setCursor] = useState("");
   const hasFetched = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
-  const { logout } = useAuth();
   const userinfoString = localStorage.getItem("userInfo");
   const userinfo = userinfoString ? JSON.parse(userinfoString) : null;
 
@@ -115,24 +114,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
-      <header className="sticky top-0 z-50 bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-gray-800">
-              Profile Page
-              <span>🥝</span>
-            </h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={logout}
-              className="px-5 py-2 text-sm font-medium text-white bg-red hover:bg-red-600 rounded-lg"
-            >
-              Déconnexion
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header />
       {user ? (
         <div>
           <div className="p-4">
