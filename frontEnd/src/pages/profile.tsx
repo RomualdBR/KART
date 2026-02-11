@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import type { Post } from "./post/types";
 import { useAuth } from "../utils/context";
+import PostCard from "../components/post_card";
 
 const limit = 5 as const;
 
@@ -17,7 +18,7 @@ export default function Profile() {
   const hasFetched = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
   const { logout } = useAuth();
-  
+
   const { id } = useParams();
   const jwt = localStorage.getItem("jwt");
 
@@ -99,15 +100,19 @@ export default function Profile() {
       </header>
       {user ? (
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Profile Information</h2>
-          <p className="text-gray-600">ID: {user.id}</p>
-          <p className="text-gray-600">Pseudo: {user.pseudo}</p>
-          <p className="text-gray-600">Email: {user.mail}</p>
-          <div className="flex flex-col gap-2">
+          <div className="p-4">
+            <h2 className="text-2xl font-bold text-gray-800">Profile Information</h2>
+            <p className="text-gray-600">ID: {user.id}</p>
+            <p className="text-gray-600">Pseudo: {user.pseudo}</p>
+            <p className="text-gray-600">Email: {user.mail}</p>
+          </div>
+          <div className="grid grid-cols-3 gap-4 lg:gap-6 p-4">
             {posts.map((post) => (
-              <div className="bg-white rounded-xl shadow-md p-6 mb-6" key={post.id}> <p className="text-gray-700 leading-relaxed">{post.content}</p></div>
+              <PostCard key={post.id} post={post} />
             ))}
 
+          </div>
+          <div className="flex justify-center mt-8">
             <button type="button" onClick={() => setOffset((prev) => prev + limit)}>
               Load more...
             </button>
