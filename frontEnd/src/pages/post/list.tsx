@@ -14,6 +14,8 @@ export default function PostList() {
 		{ keepPreviousData: true }
 	);
 
+	console.log("Fetched posts:", posts);
+
 	const distributeIntoColumns = (items: Post[]) => {
 		const columns: Post[][] = [[], [], []];
 		items.forEach((item, index) => {

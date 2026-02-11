@@ -35,7 +35,7 @@ export async function getPosts(req: Request, res: Response) {
   const user_id = Number(req.query["user_id"]) || undefined;
 
   const result = await sql`
-        SELECT "user".pseudo, post.*
+        SELECT "user".pseudo, "user".id, post.*
         FROM post
         JOIN "user"
             ON "user".id = post.user_id
