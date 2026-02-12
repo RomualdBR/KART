@@ -4,7 +4,7 @@ import { getUser, getLoggedUserInfo } from "./controllers/user.ts";
 import cors from "cors";
 
 import {
-	createPost, getPosts, getPostId, setLike,
+	createPost, getPosts, getPostById, setLike,
 	deletePost, getLikeNumber
 } from "./controllers/post.ts";
 import { createComment, getComments } from "./controllers/comment.ts";
@@ -48,7 +48,7 @@ app.post("/post/", createPost);
 app.get("/post/", getPosts);
 app.delete("/post/:id", deletePost);
 app.post("/like/:post_id", setLike);
-app.get("/post/:id", getPostId);
+app.get("/post/:id", getPostById);
 app.get("/post/:id/like", getLikeNumber);
 
 // comment

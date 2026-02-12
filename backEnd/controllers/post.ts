@@ -135,9 +135,26 @@ export async function deletePost(req: Request, res: Response) {
   res.json({ message: "Post deleted successfully" });
 }
 
-export async function getPostId(req: Request, res: Response) {
-  const post_id = Number(req.params.post_id);
-  const result = await sql`SELECT * FROM post WHERE id = ${post_id}`;
+export async function getPostById(req: Request, res: Response) {
+  const postId = Number(req.params.id);
+  const authHeader = req.headers.authorization;
+  if (!authHeader) throw new Error("No token");
+
+  const jwt = authHeader.replace("Bearer ", "");
+
+  const { id: userId } = verifyJWT(jwt);
+
+  const result = await sql`
+    SELECT "user".pseudo, post.*, CASE WHEN "post_like".id IS NULL THEN false ELSE true END AS is_liked
+    FROM post
+    JOIN "user"
+		  ON "user".id = post.user_id
+    LEFT JOIN "post_like"
+      ON "post_like".post_id = post.id
+      AND "post_like".user_id = ${userId}
+    WHERE post.id = ${postId}
+  `;
+
   res.json(result[0]);
 }
 

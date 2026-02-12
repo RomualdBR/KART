@@ -1,19 +1,34 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Header from "../../components/header";
 import PostCard from "../../components/post_card";
-import type { Post } from "../post/types";
 import { useAuth } from "../../utils/context";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import CommentCard from "../../components/comment_card";
 import type { Comment } from "../../types/comment";
+import type { Post } from "../post/types";
 
 export default function PostDetails() {
   const { token } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const { id } = useParams();
 
-  const { post } =
-    useLocation().state ?? ({ post: null } as { post: Post | null });
+  const fetchPost = useCallback(async () => {
+    setIsLoading(true);
+
+    const post = await fetch(`http://localhost:3000/post/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .finally(() => setIsLoading(false));
+
+    setPost(post);
+  }, [id, token]);
 
   async function createComment(formData: FormData) {
     "use server";
@@ -56,6 +71,14 @@ export default function PostDetails() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    fetchPost();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (isLoading)
+    return <div className="text-xl text-neutral-500">Loading... 🥝</div>;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
