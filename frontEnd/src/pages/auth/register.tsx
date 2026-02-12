@@ -12,6 +12,8 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/;
+  const [error, setError] = useState("");
+
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -45,6 +47,8 @@ export default function Register() {
       login(response.token);
       const user_id = response.id;
       navigate("/", { state: { user_id: user_id } });
+    }else {
+      setError(response.message); 
     }
 
     console.log(response);
@@ -247,6 +251,11 @@ export default function Register() {
               </button>
             </div>
           </div>
+            {error && (
+            <div className="bg-red-500 opacity-60   text-white p-2 rounded-md text-sm mt-2">
+              {error}
+            </div>
+          )}
 
           <button type="submit" className="submit-button">
             S'inscrire 🥝
