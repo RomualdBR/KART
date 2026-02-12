@@ -16,7 +16,7 @@ export async function createPost(req: Request, res: Response) {
   const content: string = req.body["content"];
 
   const result = await sql`
-        WITH inserted_post AS (
+    WITH inserted_post AS (
 			INSERT INTO post (content, user_id)
 			VALUES (${content}, ${id})
 			RETURNING *
@@ -25,7 +25,7 @@ export async function createPost(req: Request, res: Response) {
 		FROM inserted_post
 		JOIN "user"
 			ON "user".id = inserted_post.user_id
-    `;
+  `;
 
   res.json(result[0]);
 }
@@ -61,10 +61,10 @@ export async function getPosts(req: Request, res: Response) {
     SELECT "user".pseudo, post.*, CASE WHEN "post_like".id IS NULL THEN false ELSE true END AS is_liked
     FROM post
     JOIN "user"
-        ON "user".id = post.user_id
+		  ON "user".id = post.user_id
     LEFT JOIN "post_like"
-        ON "post_like".post_id = post.id
-        AND "post_like".user_id = ${connectedUserId}
+      ON "post_like".post_id = post.id
+      AND "post_like".user_id = ${connectedUserId}
     ${conditions.length > 0 ? sql`WHERE ${conditions}` : sql``}
     ORDER BY post.created_at DESC
     LIMIT ${limit}
@@ -154,10 +154,10 @@ export async function getLikeNumber(req: Request, res: Response) {
   const postId = Number(req.params.id);
 
   const result = await sql`
-      SELECT COUNT(*) AS like_count
-      FROM post_like
-      WHERE post_id = ${postId}
-    `;
+    SELECT COUNT(*) AS like_count
+    FROM post_like
+    WHERE post_id = ${postId}
+  `;
 
   res.json({ likeCount: result[0].like_count });
 }

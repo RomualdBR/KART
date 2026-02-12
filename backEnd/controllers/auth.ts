@@ -7,10 +7,10 @@ export async function userLogin(req: Request, res: Response) {
   const { mail, password } = req.body;
 
   const resp = await sql`
-        SELECT id, mail, password
-        FROM "user"
-        WHERE mail = ${mail}
-    `;
+    SELECT id, mail, password
+    FROM "user"
+    WHERE mail = ${mail}
+  `;
 
   if (!resp.length) {
     res.status(401).json({ message: "Invalid mail or password" });
@@ -46,10 +46,10 @@ export async function userRegister(req: Request, res: Response) {
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
   const result = await sql`
-        INSERT INTO "user" ("pseudo", "mail", "password")
-        VALUES (${pseudo}, ${mail}, ${hashedPassword})
-        RETURNING id, mail
-    `;
+    INSERT INTO "user" ("pseudo", "mail", "password")
+    VALUES (${pseudo}, ${mail}, ${hashedPassword})
+    RETURNING id, mail
+  `;
 
   if (!result.length) {
     res.status(400).json({ message: "Erreur lors de l'inscription" });

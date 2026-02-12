@@ -47,7 +47,6 @@ export default function Register() {
       navigate("/", { state: { user_id: user_id } });
     }
 
-
     console.log(response);
   };
 

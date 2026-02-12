@@ -6,7 +6,13 @@ import { useNavigate } from "react-router-dom";
 
 const limit = 5 as const;
 
-export default function PostList({ postToAdd, user_id }: { postToAdd: Post | null, user_id: number | null }) {
+export default function PostList({
+  postToAdd,
+  user_id,
+}: {
+  postToAdd: Post | null;
+  user_id: number | null;
+}) {
   const { token } = useAuth();
   const [cursor, setCursor] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -68,7 +74,14 @@ export default function PostList({ postToAdd, user_id }: { postToAdd: Post | nul
     <div className="w-full">
       <div className="grid grid-cols-3 gap-4 lg:gap-6">
         {posts.map((post) => (
-          <div className="cursor-pointer" onClick={() => navigate(`/post/${post.id}`, { state: { post: post, user_id: user_id } })}>
+          <div
+            className="cursor-pointer"
+            onClick={() =>
+              navigate(`/post/${post.id}`, {
+                state: { post: post, user_id: user_id },
+              })
+            }
+          >
             <PostCard key={post.id} post={post} />
           </div>
         ))}
