@@ -45,6 +45,17 @@ export async function userRegister(req: Request, res: Response) {
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+  const existingUser = await sql`
+    SELECT 1
+    FROM "user"
+    WHERE "mail" = ${mail}
+  `;
+
+  if (existingUser.length) {
+    res.status(400).json({ message: "Le mail est déjà utiisé" });
+    return;
+  }
+
   const result = await sql`
     INSERT INTO "user" ("pseudo", "mail", "password")
     VALUES (${pseudo}, ${mail}, ${hashedPassword})

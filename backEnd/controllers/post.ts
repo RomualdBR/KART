@@ -53,9 +53,7 @@ export async function getPosts(req: Request, res: Response) {
   const { id: connectedUserId } = jsonwebtoken.verify(
     jwt,
     process.env.SECRET_KEY as string,
-  ) as {
-    id: number;
-  };
+  ) as { id: number };
 
   const posts: { created_at: string }[] = await sql`
     SELECT "user".pseudo, post.*, CASE WHEN "post_like".id IS NULL THEN false ELSE true END AS is_liked

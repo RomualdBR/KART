@@ -43,8 +43,8 @@ export default function PostCard({
   };
 
   useEffect(() => {
-    fetchLikeNumber();	
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchLikeNumber();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -87,12 +87,16 @@ export default function PostCard({
         <div className="w-full h-full flex items-center justify-center text-white text-6xl opacity-20">
           🥝
         </div>
-          <span
-            onClick={fetchLike}
-            className="absolute top-2 right-2 text-2xl cursor-pointer"
-          >
-            {likeCount} {isLiked ? "💚" : "🤍"}
-          </span>
+        <button
+          type="button"
+          className="absolute top-2 right-2 text-2xl cursor-pointer bg-transparent! border-0! text-black! p-0!"
+          onClick={(e) => {
+            e.preventDefault();
+            fetchLike();
+          }}
+        >
+          {likeCount} {isLiked ? "💚" : "🤍"}
+        </button>
       </div>
     </div>
   );

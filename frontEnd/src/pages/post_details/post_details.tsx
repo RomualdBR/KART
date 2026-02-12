@@ -12,14 +12,8 @@ export default function PostDetails() {
   const [comments, setComments] = useState<Comment[]>([]);
   const { id } = useParams();
 
-  const { post, user_id } =
-    useLocation().state ??
-    ({ post: null, user_id: null } as {
-      post: Post | null;
-      user_id: number | null;
-    });
-
-  console.log(user_id, "user_id");
+  const { post } =
+    useLocation().state ?? ({ post: null } as { post: Post | null });
 
   async function createComment(formData: FormData) {
     "use server";
@@ -32,7 +26,7 @@ export default function PostDetails() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ content, post_id, user_id }),
+      body: JSON.stringify({ content, post_id }),
     });
 
     const updateComments = await getComments();
@@ -72,7 +66,7 @@ export default function PostDetails() {
           <h2 className="text-2xl font-bold text-gray-800 p-4">Commentaires</h2>
 
           {comments.map((comment) => (
-            <div>
+            <div key={comment.id}>
               <CommentCard comment={comment} />
             </div>
           ))}

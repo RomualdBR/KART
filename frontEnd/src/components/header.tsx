@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../utils/context";
 
 export default function Header() {
@@ -8,11 +8,11 @@ export default function Header() {
     return (
         <header className="sticky top-0 z-50 bg-white shadow-md">
             <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-                <div className="flex items-center gap-3">
+                <Link to="/">
                     <h1 className="text-2xl font-bold text-gray-800">
                         KART 🥝
                     </h1>
-                </div>
+                </Link>
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate("/profile")}

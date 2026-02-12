@@ -2,16 +2,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Post } from "./types";
 import PostCard from "../../components/post_card";
 import { useAuth } from "../../utils/context";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const limit = 5 as const;
 
 export default function PostList({
   postToAdd,
-  user_id,
 }: {
   postToAdd: Post | null;
-  user_id: number | null;
 }) {
   const { token } = useAuth();
   const [cursor, setCursor] = useState("");
@@ -19,7 +17,6 @@ export default function PostList({
   const [error, setError] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
   const isMountedRef = useRef(false);
-  const navigate = useNavigate();
 
   const fetchPosts = useCallback(async () => {
     setIsLoading(true);
@@ -70,20 +67,23 @@ export default function PostList({
       <div className="text-xl text-red-500">An error occured: {error} 🥝</div>
     );
 
+  if (posts.length === 0)
+    return (
+      <div className="text-xl text-neutral-500">
+        Aucun post n'a encore été publié. Soyez le premier ! 🥝
+      </div>
+    );
+
   return (
     <div className="w-full">
       <div className="grid grid-cols-3 gap-4 lg:gap-6">
         {posts.map((post) => (
-          <div
-            className="cursor-pointer"
-            onClick={() =>
-              navigate(`/post/${post.id}`, {
-                state: { post: post, user_id: user_id },
-              })
-            }
+          <Link
+            to={`/post/${post.id}`}
+            state={{ post: post  }}
           >
             <PostCard key={post.id} post={post} />
-          </div>
+          </Link>
         ))}
       </div>
 
